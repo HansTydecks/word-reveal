@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wort-Versteck - Lückentext Generator</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Crimson+Text:wght@400;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <!-- OpenDyslexic aus CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/open-dyslexic@1.0.3/open-dyslexic-regular.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Minimaler Header -->
+    <header class="header">
+        <h1>Wort-Versteck</h1>
+        <!-- Versteckte Einstellungen für JavaScript-Synchronisation -->
+        <div style="display: none;">
+            <select id="theme-select">
+                <option value="light">Hell</option>
+                <option value="dark">Dunkel</option>
+                <option value="blue">Dunkelblau</option>
+            </select>
+            <select id="font-select">
+                <option value="inter">Inter (Standard)</option>
+                <option value="crimson">Crimson Text (Serif)</option>
+                <option value="opendyslexic">OpenDyslexic</option>
+                <option value="jetbrains">JetBrains Mono</option>
+            </select>
+            <input type="range" id="font-size" min="14" max="28" value="18">
+            <span id="font-size-display">18px</span>
+        </div>
+    </header>
+
+    <!-- Navigation zwischen Textabschnitten -->
+    <nav class="text-sections-nav">
+        <div class="nav-content">
+            <div class="section-tabs" id="section-tabs">
+                <button class="tab-button active" data-section="0">Text 1</button>
+            </div>
+            <button class="add-section-btn" id="add-section-btn">+ Neuer Text</button>
+        </div>
+    </nav>
+
+    <!-- Container für alle Hauptbereiche -->
+    <main class="main-container">
+        
+        <!-- Schritt 1: Texteingabe -->
+        <section class="step step-1 active" id="step-1">
+            <div class="step-content">
+                <h2>Schritt 1: Text eingeben</h2>
+                <textarea 
+                    id="text-input" 
+                    placeholder="Geben Sie hier Ihren Text ein, den Sie in einen Lückentext umwandeln möchten..."
+                    rows="12"
+                ></textarea>
+                <div class="demo-controls">
+                    <button id="load-demo" class="btn-secondary">📖 Demo-Text laden</button>
+                </div>
+                <div class="step-buttons">
+                    <button id="next-to-selection" class="btn-primary" disabled>Weiter zur Wortauswahl</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Schritt 2: Wortauswahl & Einstellungen -->
+        <section class="step step-2" id="step-2">
+            <div class="step-content">
+                <h2>Schritt 2: Wörter auswählen & Design festlegen</h2>
+                
+                <!-- Design-Einstellungen prominent platziert -->
+                <div class="design-settings-section">
+                    <h3>📐 Design-Einstellungen für die Präsentation</h3>
+                    <div class="settings-grid">
+                        <div class="setting-card">
+                            <label for="theme-select-step2">Farbthema:</label>
+                            <select id="theme-select-step2">
+                                <option value="light">Hell</option>
+                                <option value="dark">Dunkel</option>
+                                <option value="blue">Dunkelblau</option>
+                            </select>
+                        </div>
+                        
+                        <div class="setting-card">
+                            <label for="font-select-step2">Schriftart:</label>
+                            <select id="font-select-step2">
+                                <option value="inter">Inter (Standard)</option>
+                                <option value="crimson">Crimson Text (Serif)</option>
+                                <option value="opendyslexic">OpenDyslexic</option>
+                                <option value="jetbrains">JetBrains Mono</option>
+                            </select>
+                        </div>
+                        
+                        <div class="setting-card">
+                            <label for="font-size-step2">Textgröße:</label>
+                            <div class="font-size-control">
+                                <input type="range" id="font-size-step2" min="16" max="32" value="20">
+                                <span id="font-size-display-step2">20px</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Wortauswahl -->
+                <div class="word-selection-section">
+                    <h3>📝 Wörter zum Verstecken auswählen</h3>
+                    <p class="instruction">Klicken Sie auf die Wörter, die versteckt werden sollen:</p>
+                    <div class="text-preview" id="text-preview"></div>
+                    <div class="selected-words">
+                        <h4>Ausgewählte Wörter:</h4>
+                        <div class="words-list" id="selected-words-list"></div>
+                    </div>
+                </div>
+
+                <div class="step-buttons">
+                    <button id="back-to-input" class="btn-secondary">← Zurück zum Text</button>
+                    <button id="generate-gap-text" class="btn-primary" disabled>📋 Präsentation starten</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Schritt 3: Präsentation (Clean Design) -->
+        <section class="step step-3" id="step-3">
+            <!-- Versteckter Zurück-Button (nur sichtbar bei Hover oben links) -->
+            <button id="back-to-selection-hidden" class="hidden-back-btn" title="Zurück zur Vorbereitung">←</button>
+            
+            <!-- Hauptinhalt für Präsentation -->
+            <div class="presentation-container">
+                <!-- Lückentext Display -->
+                <div class="presentation-text" id="gap-text-display"></div>
+                
+                <!-- Wörter-Sammlung -->
+                <div class="word-collection" id="word-collection">
+                    <div class="collection-header">Versteckte Wörter</div>
+                    <div class="hidden-words-list" id="hidden-words-list"></div>
+                    
+                    <!-- Text-Navigation (nur sichtbar bei mehreren Texten) -->
+                    <div class="presentation-nav" id="presentation-nav">
+                        <button id="prev-text" class="nav-btn" title="Vorheriger Text">‹</button>
+                        <span class="text-indicator" id="text-indicator">Text 1</span>
+                        <button id="next-text" class="nav-btn" title="Nächster Text">›</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
