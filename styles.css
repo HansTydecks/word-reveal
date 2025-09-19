@@ -837,3 +837,28 @@ button:focus {
         font-size: 1.05em;
     }
 }
+
+/* Footer Styles */
+footer {
+    margin-top: 2rem;
+    padding: 1rem 0;
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.impressum p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.impressum a {
+    color: var(--text-accent);
+    text-decoration: none;
+    margin: 0 0.5rem;
+}
+
+.impressum a:hover {
+    text-decoration: underline;
+}
